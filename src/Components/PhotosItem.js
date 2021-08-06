@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const CakesItem = props => {
+const PhotosItem = props => {
   const rightSwipe = (progress, dragX) => {
     const Scale = dragX.interpolate({
       inputRange: [0, 100],
@@ -85,11 +85,11 @@ const CakesItem = props => {
         style={styles.viewContainer}
         onPress={props.onDetailPressed}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{uri: props.data.image}} />
+          <Image style={styles.image} source={{uri: props.image}} />
         </View>
         <View style={styles.textContainer}>
           <View style={styles.textRow}>
-            <Text style={styles.title}>{props.data.title}</Text>
+            <Text style={styles.title}>{props.title}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -97,4 +97,4 @@ const CakesItem = props => {
   );
 };
 
-export default CakesItem;
+export default PhotosItem;

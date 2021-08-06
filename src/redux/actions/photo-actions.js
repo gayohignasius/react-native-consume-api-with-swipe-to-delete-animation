@@ -17,14 +17,7 @@ export const fetchPhotos = values => {
       const newListPhotos = [];
       for (const id in resData) {
         newListPhotos.push(
-          new Photos(
-            resData[id].id,
-            resData[id].title,
-            // resData.data.items[id].description,
-            // resData.data.items[id].rating,
-            resData[id].url,
-          ),
-          // new Cake(id, resData.title, resData.image),
+          new Photos(resData[id].id, resData[id].title, resData[id].url),
         );
       }
       dispatch({
@@ -54,7 +47,6 @@ export const addPhotos = (title, imageUrl) => {
     );
 
     const resData = await response.json();
-    console.log(resData);
     dispatch({
       type: CREATE_PHOTOS,
       newListOfPhotos: {

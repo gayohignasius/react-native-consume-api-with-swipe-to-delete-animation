@@ -14,6 +14,7 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import * as photoActions from '../redux/actions/photo-actions';
 import PhotosItem from '../Components/PhotosItem';
+import {useCallback} from 'react';
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +88,8 @@ const styles = StyleSheet.create({
 const HomeScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [refresh, setRefresh] = useState(false);
+  const [error, setError] = useState();
   const photos = useSelector(state => state.photos.listOfPhotos);
   const dispatch = useDispatch();
 
@@ -103,7 +106,7 @@ const HomeScreen = props => {
     });
   };
 
-  const onAddNewPressed = i => {
+  const onAddNewPressed = id => {
     props.navigation.navigate('AddNewScreen');
   };
 
@@ -143,6 +146,19 @@ const HomeScreen = props => {
     setIsLoading(true);
   };
 
+  const onRefresh = useCallback(async () => {
+    setIsLoading(true);
+    setCurrentPage(1);
+    setError(null);
+    try {
+      await dispatch(photoActions.fetchPhotos(currentPage));
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+    setRefresh(false);
+  }, [dispatch, currentPage, setIsLoading, setError, setCurrentPage]);
+
   const renderFooter = () => {
     return (
       <>
@@ -158,13 +174,16 @@ const HomeScreen = props => {
   return (
     <View style={styles.container}>
       <FlatList
+        onRefresh={onRefresh}
+        refreshing={refresh}
         showsVerticalScrollIndicator={true}
         data={photos}
-        // keyExtractor={(item, index) => index.toString()}
-        keyExtractor={item => item.id}
+        // keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={itemData => (
           <PhotosItem
-            data={itemData.item}
+            image={itemData.item.image}
+            title={itemData.item.title}
             onDetailPressed={() =>
               onDetailPressed(
                 itemData.item.id,
